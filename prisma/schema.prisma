@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model students {
+  Id              BigInt        @id @default(autoincrement())
+  nis             BigInt        @unique
+  name            String        @db.VarChar(123)
+  password        String        @db.VarChar(123)
+  class_name      class_name    @relation(fields: [class_name_id], references: [Id])
+  teacher         teachers      @relation(fields: [teacher_id], references: [Id])
+  role            roles         @relation(fields: [role_id], references: [Id])
+  class_name_id   BigInt        
+  teacher_id      BigInt        
+  role_id         BigInt        
+
+  attendance attendance[]
+}
+
+model teachers {
+  Id              BigInt       @id @default(autoincrement())
+  nip             BigInt       @unique
+  name            String       @db.VarChar(123)
+  password        String       @db.VarChar(123)
+  class_name      class_name   @relation(fields: [class_name_id], references: [Id])
+  roles           roles        @relation(fields: [role_id], references: [Id])
+  class_name_id   BigInt       
+  role_id         BigInt       
+
+  @@unique([class_name_id, role_id])
+
+  students students[]
+}
+
+model class_name {
+  Id        BigInt         @id @unique @default(autoincrement())
+  class     BigInt         @db.BigInt
+  code      String         @db.VarChar(1)
+
+  students students[]
+  teachers teachers[]
+}
+
+model roles {
+  Id        BigInt        @id @unique @default(autoincrement())
+  role      String        @db.VarChar(12)
+
+  students students[]
+  teachers teachers[]
+}
+
+model attendance {
+  Id          BigInt         @id @unique @default(autoincrement())
+  date        DateTime       @db.Date
+  check_in    DateTime       @db.Timestamp
+  check_out   DateTime       @db.Timestamp
+  student_id  BigInt
+  students    students       @relation(fields: [student_id], references: [Id])
+}
