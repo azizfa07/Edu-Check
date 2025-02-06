@@ -15,29 +15,27 @@ datasource db {
 }
 
 model students {
-  Id              BigInt        @id @default(autoincrement())
-  nis             BigInt        @unique
+  nis             BigInt        @unique @id
   name            String        @db.VarChar(123)
   password        String        @db.VarChar(123)
-  class_name      class_name    @relation(fields: [class_name_id], references: [Id])
-  teacher         teachers      @relation(fields: [teacher_id], references: [Id])
-  role            roles         @relation(fields: [role_id], references: [Id])
   class_name_id   BigInt        
-  teacher_id      BigInt        
+  teacher_nip     BigInt        
   role_id         BigInt        
+  class_name      class_name    @relation(fields: [class_name_id], references: [id])
+  teacher         teachers      @relation(fields: [teacher_nip], references: [nip])
+  role            roles         @relation(fields: [role_id], references: [id])
 
   attendance attendance[]
 }
 
 model teachers {
-  Id              BigInt       @id @default(autoincrement())
-  nip             BigInt       @unique
-  name            String       @db.VarChar(123)
-  password        String       @db.VarChar(123)
-  class_name      class_name   @relation(fields: [class_name_id], references: [Id])
-  roles           roles        @relation(fields: [role_id], references: [Id])
+  nip             BigInt        @unique @id
+  name            String        @db.VarChar(123)
+  password        String        @db.VarChar(123)
   class_name_id   BigInt       
   role_id         BigInt       
+  class_name      class_name    @relation(fields: [class_name_id], references: [id])
+  roles           roles         @relation(fields: [role_id], references: [id])
 
   @@unique([class_name_id, role_id])
 
@@ -45,7 +43,7 @@ model teachers {
 }
 
 model class_name {
-  Id        BigInt         @id @unique @default(autoincrement())
+  id        BigInt         @id @unique @default(autoincrement())
   class     BigInt         @db.BigInt
   code      String         @db.VarChar(1)
 
@@ -54,18 +52,18 @@ model class_name {
 }
 
 model roles {
-  Id        BigInt        @id @unique @default(autoincrement())
-  role      String        @db.VarChar(12)
+  id        BigInt         @id @unique @default(autoincrement())
+  role      String         @db.VarChar(12)
 
   students students[]
   teachers teachers[]
 }
 
 model attendance {
-  Id          BigInt         @id @unique @default(autoincrement())
-  date        DateTime       @db.Date
-  check_in    DateTime       @db.Timestamp
-  check_out   DateTime       @db.Timestamp
-  student_id  BigInt
-  students    students       @relation(fields: [student_id], references: [Id])
+  id          BigInt       @id @unique @default(autoincrement())
+  date        DateTime     @db.Date
+  check_in    DateTime     @db.Timestamp
+  check_out   DateTime     @db.Timestamp
+  student_nis BigInt
+  students    students     @relation(fields: [student_nis], references: [nis], onDelete: Cascade)
 }
