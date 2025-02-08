@@ -32,9 +32,9 @@ model teachers {
   nip             BigInt        @unique @id
   name            String        @db.VarChar(123)
   password        String        @db.VarChar(123)
-  class_name_id   BigInt       
+  class_name_id   BigInt?       
   role_id         BigInt       
-  class_name      class_name    @relation(fields: [class_name_id], references: [id])
+  class_name      class_name?   @relation(fields: [class_name_id], references: [id])
   roles           roles         @relation(fields: [role_id], references: [id])
 
   @@unique([class_name_id, role_id])
