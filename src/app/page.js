@@ -1,10 +1,11 @@
-
-import LoginButton from "@/components/Auth/login-button"
+import LoginButton from "@/components/auth/login-button";
 
 export default function Home() {
   return (
     <>
-      <LoginButton />
+      <div className="h-screen flex flex-col items-center justify-center text-center">
+        <LoginButton />
+      </div>
     </>
   );
 }

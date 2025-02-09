@@ -1,63 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import TeacherLogin from "@/components/auth/teacher/teacher-login";
+import StudentLogin from "@/components/auth/student/student-login";
+import { X } from "lucide-react";
 
 export default function LoginPage() {
-  const [nip, setNip] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  const handleLogin = async () => {
-    setLoading(true);
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nip, password }),
-    });
-
-    const data = await res.json();
-    setLoading(false);
-
-    if (res.ok) {
-      ("Login berhasil!");
-      router.push("/admin"); // Sesuaikan dengan halaman admin
-    } else {
-      (data.message);
-    }
-  };
-
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <Card className="w-96">
-        <CardHeader>
-          <CardTitle>Login Admin</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Input
-            type="text"
-            placeholder="NIP"
-            value={nip}
-            onChange={(e) => setNip(e.target.value)}
-            className="mb-4"
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mb-4"
-          />
-          <Button onClick={handleLogin} disabled={loading} className="w-full">
-            {loading ? "Memproses..." : "Login"}
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+    <>
+      <Link className="absolute top-5 right-5" href="/">
+        <X />
+      </Link>
+      <Tabs
+        defaultValue="guru"
+        className="w-72 flex flex-col justify-center mx-auto h-screen"
+      >
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="guru">Guru</TabsTrigger>
+          <TabsTrigger value="siswa">Siswa</TabsTrigger>
+        </TabsList>
+        <TabsContent value="guru">
+          <TeacherLogin />
+        </TabsContent>
+        <TabsContent value="siswa">
+          <StudentLogin />
+        </TabsContent>
+      </Tabs>
+    </>
   );
 }

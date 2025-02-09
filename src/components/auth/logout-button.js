@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 
-export default function Dashboard() {
+export default function Logout() {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -12,9 +12,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-      <button onClick={handleLogout} className="mt-4 px-4 py-2 bg-red-500 text-white rounded">
+    <div className="flex flex-col items-center justify-center">
+      <button onClick={handleLogout} className="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded">
         Logout
       </button>
     </div>
