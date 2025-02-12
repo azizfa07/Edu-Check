@@ -14,35 +14,35 @@ import {
 // Menu items.
 const items = [
   {
-    title: "Home",
+    title: "Beranda",
     url: "/admin",
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
+    title: "Data Angkatan",
+    url: "/admin/data-angkatan",
     icon: Search,
   },
   {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    title: "Data Kelas",
+    url: "/admin/data-kelas",
+    icon: Inbox,
+  },
+  {
+    title: "Data Guru",
+    url: "/admin/data-guru",
+    icon: Calendar,
+  },
+  {
+    title: "Data Siswa",
+    url: "/admin/data-siswa",
+    icon: Search,
   },
 ]
 
 export default function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>

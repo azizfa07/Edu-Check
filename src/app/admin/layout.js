@@ -1,3 +1,6 @@
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/app-sidebar";
+import { Toaster } from "@/components/ui/toaster";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt from "jsonwebtoken";
@@ -14,5 +17,14 @@ export default async function AdminLayout({ children }) {
     redirect("/unauthorized"); // Hanya admin (role_id 1) yang bisa akses
   }
 
-  return <>{children}</>;
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <main className="w-full flex">
+        <SidebarTrigger />
+        <Toaster />
+        {children}
+      </main>
+    </SidebarProvider>
+  );
 }

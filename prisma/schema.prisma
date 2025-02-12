@@ -1,69 +1,70 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model students {
-  nis             BigInt        @unique @id
-  name            String        @db.VarChar(123)
-  password        String        @db.VarChar(123)
-  class_name_id   BigInt        
-  teacher_nip     BigInt        
-  role_id         BigInt        
-  class_name      class_name    @relation(fields: [class_name_id], references: [id])
-  teacher         teachers      @relation(fields: [teacher_nip], references: [nip])
-  role            roles         @relation(fields: [role_id], references: [id])
-
-  attendance attendance[]
+  nis             BigInt       @id @unique
+  name            String       @db.VarChar(123)
+  password        String       @db.VarChar(123)
+  role_id         BigInt       @default(3)
+  class_name_id   BigInt
+  teacher_nip     BigInt
+  generation_year BigInt
+  attendance      attendance[]
+  class_name      class_name   @relation(fields: [class_name_id], references: [id])
+  generation      generations  @relation(fields: [generation_year], references: [generation_year])
+  role            roles        @relation(fields: [role_id], references: [id])
+  teacher         teachers     @relation(fields: [teacher_nip], references: [nip])
 }
 
 model teachers {
-  nip             BigInt        @unique @id
-  name            String        @db.VarChar(123)
-  password        String        @db.VarChar(123)
-  class_name_id   BigInt?       
-  role_id         BigInt       
-  class_name      class_name?   @relation(fields: [class_name_id], references: [id])
-  roles           roles         @relation(fields: [role_id], references: [id])
+  nip           BigInt      @id @unique
+  name          String      @db.VarChar(123)
+  password      String      @db.VarChar(123)
+  role_id       BigInt
+  class_name_id BigInt?
+  students      students[]
+  class_name    class_name? @relation(fields: [class_name_id], references: [id])
+  roles         roles       @relation(fields: [role_id], references: [id])
 
   @@unique([class_name_id, role_id])
-
-  students students[]
 }
 
 model class_name {
-  id        BigInt         @id @unique @default(autoincrement())
-  class     BigInt         @db.BigInt
-  code      String         @db.VarChar(1)
+  class           BigInt
+  code            String      @db.VarChar(1)
+  id              BigInt      @id @unique @default(autoincrement())
+  generation_year BigInt?
+  generation      generations? @relation(fields: [generation_year], references: [generation_year])
+  students        students[]
+  teachers        teachers[]
+}
 
-  students students[]
-  teachers teachers[]
+model generations {
+  generation_year   BigInt       @id @unique @default(2024)
+  generation_number Int          @unique
+  class_name        class_name[]
+  students          students[]
 }
 
 model roles {
-  id        BigInt         @id @unique @default(autoincrement())
-  role      String         @db.VarChar(12)
-
+  role     String     @db.VarChar(12)
+  id       BigInt     @id @unique @default(autoincrement())
   students students[]
   teachers teachers[]
 }
 
 model attendance {
-  id          BigInt       @id @unique @default(autoincrement())
-  date        DateTime     @db.Date
-  check_in    DateTime     @db.Timestamp
-  check_out   DateTime     @db.Timestamp
+  date        DateTime @db.Date
+  check_in    DateTime @db.Timestamp(6)
+  check_out   DateTime @db.Timestamp(6)
+  id          BigInt   @id @unique @default(autoincrement())
   student_nis BigInt
-  students    students     @relation(fields: [student_nis], references: [nis], onDelete: Cascade)
+  students    students @relation(fields: [student_nis], references: [nis], onDelete: Cascade)
 }
