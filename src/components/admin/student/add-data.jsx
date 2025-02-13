@@ -88,7 +88,7 @@ export default function StudentForm() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="w-2/12 flex">Tambah Siswa
+        <Button variant="outline" className="w-40 h-full  flex text-wrap">Tambah Siswa
         <Plus />
         </Button>
       </SheetTrigger>

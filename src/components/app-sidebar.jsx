@@ -19,25 +19,16 @@ const items = [
     icon: Home,
   },
   {
-    title: "Data Angkatan",
-    url: "/admin/data-angkatan",
-    icon: Search,
-  },
-  {
-    title: "Data Kelas",
-    url: "/admin/data-kelas",
-    icon: Inbox,
-  },
-  {
-    title: "Data Guru",
-    url: "/admin/data-guru",
-    icon: Calendar,
-  },
-  {
     title: "Data Siswa",
     url: "/admin/data-siswa",
     icon: Search,
   },
+  
+    {
+      title: "Data Guru",
+      url: "/admin/data-guru",
+      icon: Calendar,
+    },
 ]
 
 export default function AppSidebar() {
