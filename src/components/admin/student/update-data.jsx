@@ -14,7 +14,14 @@ export default function UpdateData({ student, onClose }) {
       method: "PUT",
       body: JSON.stringify({ name, role }),
     });
-    onClose();
+
+    const result = await res.json();
+
+    if (result.success) {
+      toast({ title: "Berhasil!", description: result.message });
+    } else {
+      setErrorMessage(result.message || "Terjadi kesalahan");
+    }
   };
 
   return (

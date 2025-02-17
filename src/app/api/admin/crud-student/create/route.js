@@ -11,7 +11,6 @@ export async function POST(req) {
       nis,
       name,
       password,
-      role_id,
       class_name_id,
       teacher_nip,
       generation_year,

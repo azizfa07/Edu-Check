@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma"; // Pastikan prisma sudah dikonfigurasi
 
-export async function GET(req) {
+export async function GET() {
   try {
     const students = await prisma.students.findMany({
       select: {

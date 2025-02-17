@@ -19,7 +19,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
 
 export default function StudentForm() {
@@ -70,7 +70,7 @@ export default function StudentForm() {
     });
     const result = await res.json();
     console.log(result);
-   
+
     if (result.success) {
       toast({
         title: "Berhasil!",
@@ -88,8 +88,9 @@ export default function StudentForm() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="w-40 h-full  flex text-wrap">Tambah Siswa
-        <Plus />
+        <Button variant="outline" className="w-40 h-full  flex text-wrap">
+          Tambah Siswa
+          <Plus />
         </Button>
       </SheetTrigger>
       <SheetContent side="right">
@@ -133,12 +134,17 @@ export default function StudentForm() {
           <div className="space-y-1">
             <Label htmlFor="class_name_id">Pilih Kelas</Label>
             <Select
+              value={formData.class_name_id} // Menetapkan nilai yang dipilih
               onValueChange={(value) =>
                 setFormData({ ...formData, class_name_id: value })
               }
             >
               <SelectTrigger>
-                {formData.class_name_id || "Pilih Kelas"}
+                <span>
+                  {options.classNames?.find(
+                    (cls) => cls.id === formData.class_name_id
+                  )?.class_name || "Pilih Kelas"}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 {options.classNames.map((cls) => (
@@ -152,12 +158,17 @@ export default function StudentForm() {
           <div className="space-y-1">
             <Label htmlFor="teacher_nip">Pilih Guru</Label>
             <Select
+              value={formData.teacher_nip}
               onValueChange={(value) =>
                 setFormData({ ...formData, teacher_nip: value })
               }
             >
               <SelectTrigger>
-                {formData.teacher_nip || "Pilih Guru"}
+                <span>
+                  {options.teachers.find(
+                    (teacher) => teacher?.nip === formData.teacher_nip
+                  )?.name || "Pilih Guru"}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 {options.teachers.map((teacher) => (
@@ -171,12 +182,17 @@ export default function StudentForm() {
           <div className="space-y-1">
             <Label htmlFor="generation_year">Pilih Tahun Angkatan</Label>
             <Select
+              value={formData.generation_year}
               onValueChange={(value) =>
                 setFormData({ ...formData, generation_year: value })
               }
             >
               <SelectTrigger>
-                {formData.generation_year || "Pilih Tahun"}
+                <span>
+                  {options.generations.find(
+                    (gen) => gen.generation_year === formData.generation_year
+                  )?.generation_year || "Pilih Tahun"}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 {options.generations.map((gen) => (
@@ -192,7 +208,9 @@ export default function StudentForm() {
           </div>
           <div className="space-y-1">
             <SheetFooter>
-              <Button className="mt-4" type="submit">Simpan</Button>
+              <Button className="mt-4" type="submit">
+                Simpan
+              </Button>
             </SheetFooter>
           </div>
         </form>

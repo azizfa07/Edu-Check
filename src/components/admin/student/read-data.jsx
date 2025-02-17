@@ -20,7 +20,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import UpdateData from "@/components/admin/student/update-data";
-import { Button } from "@/components/ui/button";
+import DeleteButton from "@/components/admin/student/delete-data";
+import UpdateButton from "@/components/admin/student/update-data";
 
 export default function StudentList() {
   const [students, setStudents] = useState([]);
@@ -28,52 +29,47 @@ export default function StudentList() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const studentsPerPage = 7;
+  const studentsData = 7;
 
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const response = await fetch("/api/admin/crud-student/read");
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message);
-        setStudents(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchStudents();
   }, []);
+
+  const fetchStudents = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/admin/crud-student/read");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      setStudents(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteSuccess = (deletedNis) => {
+    setStudents((prevStudents) =>
+      prevStudents.filter((student) => student.nis !== deletedNis)
+    );
+  };
 
   const handleEdit = (student) => {
     setSelectedStudent(student);
     setIsEditOpen(true);
   };
 
-  const handleDelete = async (nis) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus siswa ini?")) return;
-    try {
-      const response = await fetch(`/api/admin/crud-student/delete/${nis}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) throw new Error("Gagal menghapus data.");
-      setStudents((prev) => prev.filter((student) => student.nis !== nis));
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
   const filteredStudents = search
     ? students.filter((student) => student.nis.toString().includes(search))
     : students;
 
-  const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
-  const indexOfLastStudent = currentPage * studentsPerPage;
-  const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
+  const totalPages = Math.ceil(filteredStudents.length / studentsData);
+  const indexOfLastStudent = currentPage * studentsData;
+  const indexOfFirstStudent = indexOfLastStudent - studentsData;
   const currentStudents = filteredStudents.slice(
     indexOfFirstStudent,
     indexOfLastStudent
@@ -94,27 +90,12 @@ export default function StudentList() {
             <Table className="border-collapse">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-center whitespace-nowrap">
-                    NIS
-                  </TableHead>
-                  <TableHead className="text-left whitespace-nowrap">
-                    Nama
-                  </TableHead>
-                  <TableHead className="text-center whitespace-nowrap">
-                    Role
-                  </TableHead>
-                  <TableHead className="text-center whitespace-nowrap">
-                    Kelas
-                  </TableHead>
-                  <TableHead className="text-center whitespace-nowrap">
-                    Wali Kelas
-                  </TableHead>
-                  <TableHead className="text-center whitespace-nowrap">
-                    Tahun Angkatan
-                  </TableHead>
-                  <TableHead className="text-center whitespace-nowrap">
-                    Aksi
-                  </TableHead>
+                  <TableHead className="text-center">NIS</TableHead>
+                  <TableHead className="text-left">Nama</TableHead>
+                  <TableHead className="text-center">Kelas</TableHead>
+                  <TableHead className="text-center">Wali Kelas</TableHead>
+                  <TableHead className="text-center">Tahun Angkatan</TableHead>
+                  <TableHead className="text-center">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -123,9 +104,6 @@ export default function StudentList() {
                     <TableCell className="text-center">{student.nis}</TableCell>
                     <TableCell className="text-left truncate">
                       {student.name}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {student.role}
                     </TableCell>
                     <TableCell className="text-center">
                       {student.class}
@@ -137,12 +115,11 @@ export default function StudentList() {
                       {student.generation_year}
                     </TableCell>
                     <TableCell className="w-full flex justify-center gap-x-2">
-                      <Button size="sm" variant="outline" onClick={() => handleEdit(student)}>
-                        Edit
-                      </Button>
-                      <Button size="sm" variant="destructive" onClick={() => handleDelete(student.nis)}>
-                        Hapus
-                      </Button>
+                      <UpdateButton initialData={student} />
+                      <DeleteButton
+                        nis={student.nis}
+                        onDelete={handleDeleteSuccess} 
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -150,7 +127,7 @@ export default function StudentList() {
             </Table>
           </Card>
 
-          <Pagination className="mt-4">
+          <Pagination className="mt-5">
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious
@@ -183,9 +160,11 @@ export default function StudentList() {
         </div>
       )}
 
-      {/* Modal Edit */}
       {isEditOpen && (
-        <UpdateData student={selectedStudent} onClose={() => setIsEditOpen(false)} />
+        <UpdateData
+          student={selectedStudent}
+          onClose={() => setIsEditOpen(false)}
+        />
       )}
     </>
   );
