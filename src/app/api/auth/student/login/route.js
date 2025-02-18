@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs"; // Tambahkan bcrypt untuk hashing password
 import prisma from "@/lib/prisma"; // Sesuaikan path Prisma client
 
 export async function POST(req) {
@@ -31,8 +32,9 @@ export async function POST(req) {
       );
     }
 
-    // Validasi password (tanpa hashing)
-    if (student.password !== password) {
+    // **Gunakan bcrypt untuk membandingkan password**
+    const isPasswordValid = await bcrypt.compare(password, student.password);
+    if (!isPasswordValid) {
       return NextResponse.json({ message: "Password salah" }, { status: 401 });
     }
 

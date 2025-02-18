@@ -71,11 +71,8 @@ export default function DeleteButton({ nis, onDelete }) {
         />
 
         <div className="flex justify-end space-x-2">
-          <Button variant="outline" disabled={isLoading}>
-            Batal
-          </Button>
           <Button variant="destructive" onClick={handleDelete} disabled={isLoading || inputNis === ""}>
-            {isLoading ? "Menghapus..." : "Lanjutkan"}
+            {isLoading ? "Menghapus..." : "Hapus"}
           </Button>
         </div>
       </DialogContent>

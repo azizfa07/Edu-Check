@@ -3,8 +3,8 @@ import prisma from "@/lib/prisma";
 
 export async function PUT(req, { params }) {
   try {
-    const { nis } = await params; 
-    const data = await req.json(); 
+    const { nis } = params; // Ambil NIS dari params
+    const data = await req.json(); // Ambil data dari request body
 
     // Validasi data tidak boleh kosong
     if (!data.name || !data.class_name_id || !data.teacher_nip || !data.generation_year) {
@@ -12,13 +12,14 @@ export async function PUT(req, { params }) {
     }
 
     // Validasi NIS harus angka
-    const nisInt = parseInt(nis);
-    const newNisInt = parseInt(data.nis);
-    if (isNaN(nisInt) || isNaN(newNisInt)) {
+    if (!/^\d+$/.test(nis) || !/^\d+$/.test(data.nis)) {
       return NextResponse.json({ success: false, message: "NIS harus berupa angka" }, { status: 400 });
     }
 
-    // Validasi nama hanya huruf
+    const nisInt = BigInt(nis);
+    const newNisInt = BigInt(data.nis);
+
+    // Validasi nama hanya boleh berisi huruf dan spasi
     if (!/^[A-Za-z\s]+$/.test(data.name)) {
       return NextResponse.json({ success: false, message: "Nama hanya boleh berisi huruf" }, { status: 400 });
     }
@@ -46,7 +47,10 @@ export async function PUT(req, { params }) {
     // Update siswa di database
     const updatedStudent = await prisma.students.update({
       where: { nis: nisInt },
-      data,
+      data: {
+        ...data,
+        nis: newNisInt, // Pastikan NIS tetap dalam format BigInt
+      },
     });
 
     // Konversi BigInt ke String sebelum dikirim ke frontend
@@ -65,9 +69,12 @@ export async function PUT(req, { params }) {
       student: serializedStudent,
     });
   } catch (error) {
-    console.error("Error saat update:", error);
+    console.error("❌ Error Prisma:", error.message);
     return NextResponse.json(
-      { success: false, message: "Gagal memperbarui data", error: error.message },
+      {
+        success: false,
+        message: "Kesalahan database: " + error.message,
+      },
       { status: 500 }
     );
   }

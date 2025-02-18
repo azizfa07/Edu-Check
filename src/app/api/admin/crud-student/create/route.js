@@ -17,14 +17,8 @@ export async function POST(req) {
     } = body;
 
     //  Validasi input
-    if (
-      !nis ||
-      !name ||
-      !password ||
-      !class_name_id ||
-      !teacher_nip ||
-      !generation_year
-    ) {
+    if (!nis || !name || !class_name_id || !teacher_nip || !generation_year) 
+      {
       return new Response(
         JSON.stringify({ success: false, message: "Semua field harus diisi!" }),
         { status: 400 }
@@ -86,12 +80,14 @@ export async function POST(req) {
       );
     }
 
+    const defaultPassword = "$2a$12$tR/cveLfVT6lclzYF4rLVe3XPMIgYA.Jq/RUx8GgJFmriuxAX/CJe"; // Hash dari skema Prisma
+
     //  Buat student baru
     const newStudent = await prisma.students.create({
       data: {
         nis: Number(nis),
         name,
-        password,
+        password: defaultPassword,
         role: { connect: { id: 3 } },
         class_name: { connect: { id: Number(class_name_id) } },
         teacher: { connect: { nip: Number(teacher_nip) } },

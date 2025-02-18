@@ -26,7 +26,6 @@ export default function StudentForm() {
   const [formData, setFormData] = useState({
     nis: "",
     name: "",
-    password: "",
     class_name_id: "",
     teacher_nip: "",
     generation_year: "",
@@ -118,16 +117,6 @@ export default function StudentForm() {
               name="name"
               id="name"
               value={formData.name}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              type="password"
-              name="password"
-              id="password"
-              value={formData.password}
               onChange={handleChange}
             />
           </div>

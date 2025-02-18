@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma"; // Sesuaikan path Prisma client
 
 export async function POST(req) {
   try {
-    // Parsing JSON dari request
     let body;
     try {
       body = await req.json();
@@ -17,7 +17,6 @@ export async function POST(req) {
 
     const { nip, password } = body;
 
-    // Validasi input tidak boleh kosong
     if (!nip || !password) {
       return NextResponse.json(
         { message: "NIP dan password harus diisi" },
@@ -25,7 +24,6 @@ export async function POST(req) {
       );
     }
 
-    // Konversi NIP ke BigInt
     let nipBigInt;
     try {
       nipBigInt = BigInt(nip);
@@ -36,7 +34,6 @@ export async function POST(req) {
       );
     }
 
-    // Cari teacher berdasarkan NIP
     let teacher;
     try {
       teacher = await prisma.teachers.findUnique({
@@ -58,17 +55,16 @@ export async function POST(req) {
       );
     }
 
-    // Validasi password (tanpa hashing)
-    if (teacher.password !== password) {
+    // Bandingkan password menggunakan bcrypt
+    const passwordMatch = await bcrypt.compare(password, teacher.password);
+    if (!passwordMatch) {
       return NextResponse.json({ message: "Password salah" }, { status: 401 });
     }
 
-    // Tentukan role berdasarkan role_id
     let role = "teacher";
     if (teacher.role_id === BigInt(1)) role = "admin";
     else if (teacher.role_id === BigInt(2)) role = "teacher";
 
-    // Buat token JWT
     let token;
     try {
       token = jwt.sign(
@@ -88,7 +84,6 @@ export async function POST(req) {
       );
     }
 
-    // Buat response dengan cookie
     const response = NextResponse.json({
       message: "Login berhasil",
       teacher: {
@@ -98,7 +93,6 @@ export async function POST(req) {
       },
     });
 
-    // Set cookie di response
     try {
       response.cookies.set("auth_token", token, {
         httpOnly: true,

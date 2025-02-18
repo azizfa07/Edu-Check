@@ -31,7 +31,7 @@ export default function StudentList() {
   const [currentPage, setCurrentPage] = useState(1);
   const studentsData = 7;
 
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedStudent] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   useEffect(() => {
@@ -58,13 +58,13 @@ export default function StudentList() {
     );
   };
 
-  const handleEdit = (student) => {
-    setSelectedStudent(student);
-    setIsEditOpen(true);
-  };
-
   const filteredStudents = search
-    ? students.filter((student) => student.nis.toString().includes(search))
+    ? students.filter(
+        (student) =>
+          student.nis.toString().includes(search) ||
+          student.name.toLowerCase().includes(search.toLowerCase()) ||
+          student.class.toLowerCase().includes(search.toLowerCase())
+      )
     : students;
 
   const totalPages = Math.ceil(filteredStudents.length / studentsData);
@@ -118,7 +118,7 @@ export default function StudentList() {
                       <UpdateButton initialData={student} />
                       <DeleteButton
                         nis={student.nis}
-                        onDelete={handleDeleteSuccess} 
+                        onDelete={handleDeleteSuccess}
                       />
                     </TableCell>
                   </TableRow>

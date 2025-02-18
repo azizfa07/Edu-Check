@@ -11,7 +11,7 @@ datasource db {
 model students {
   nis             BigInt       @id @unique
   name            String       @db.VarChar(123)
-  password        String       @db.VarChar(123)
+  password        String?      @default("$2a$12$tR/cveLfVT6lclzYF4rLVe3XPMIgYA.Jq/RUx8GgJFmriuxAX/CJe") @db.VarChar(123)
   role_id         BigInt       @default(3)
   class_name_id   BigInt
   teacher_nip     BigInt
@@ -26,7 +26,7 @@ model students {
 model teachers {
   nip           BigInt      @id @unique
   name          String      @db.VarChar(123)
-  password      String      @db.VarChar(123)
+  password      String      @default("$2a$12$QT9om/5F.pVY7o3trDo3gusiPLqG/LlAgQR8Dq5N2bp4O.3ap0PPy") @db.VarChar(123)
   role_id       BigInt
   class_name_id BigInt?
   students      students[]
@@ -40,7 +40,7 @@ model class_name {
   class           BigInt
   code            String      @db.VarChar(1)
   id              BigInt      @id @unique @default(autoincrement())
-  generation_year BigInt?
+  generation_year BigInt?     
   generation      generations? @relation(fields: [generation_year], references: [generation_year])
   students        students[]
   teachers        teachers[]

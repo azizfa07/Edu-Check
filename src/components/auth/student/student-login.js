@@ -55,7 +55,7 @@ export default function StudentLogin() {
 
       // Redirect berdasarkan role_id
       if (data.student?.role_id === "3") {
-        router.push("/absensi");
+        router.push("/student");
       } else {
         setError("Anda tidak memiliki akses.");
       }
@@ -68,7 +68,7 @@ export default function StudentLogin() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Siswa</CardTitle>
+        <CardTitle className="text-xl">Masuk</CardTitle>
         <CardDescription>
           Masukkan NIS dan password untuk login sebagai siswa.
         </CardDescription>
@@ -102,7 +102,7 @@ export default function StudentLogin() {
           disabled={loadingStudent}
           className="w-2/5"
         >
-          {loadingStudent ? <LoaderCircle className="animate-spin" /> : "Login"}
+          {loadingStudent ? <LoaderCircle className="animate-spin" /> : "Masuk"}
         </Button>
       </CardFooter>
     </Card>

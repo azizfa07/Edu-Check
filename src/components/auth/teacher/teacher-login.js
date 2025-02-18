@@ -59,7 +59,7 @@ export default function TeacherLogin() {
           data.teacher.role_id === "1"
             ? "/admin"
             : data.teacher.role_id === "2"
-            ? "/guru"
+            ? "/teacher"
             : "/"
         );
       } else {
@@ -74,7 +74,7 @@ export default function TeacherLogin() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Guru</CardTitle>
+        <CardTitle className="text-xl">Masuk</CardTitle>
         <CardDescription>
           Masukkan NIP dan password untuk login sebagai guru.
         </CardDescription>
@@ -109,7 +109,7 @@ export default function TeacherLogin() {
           disabled={loadingTeacher}
           className="w-2/5"
         >
-          {loadingTeacher ? <LoaderCircle className="animate-spin" /> : "Login"}
+          {loadingTeacher ? <LoaderCircle className="animate-spin" /> : "Masuk"}
         </Button>
       </CardFooter>
     </Card>
